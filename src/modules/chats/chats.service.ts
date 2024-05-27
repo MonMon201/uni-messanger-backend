@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 
 import { ChatUsersService } from 'src/modules/chat-users/chat-users.service';
-import { ChatMessagesService } from 'src/modules/chat-messages/chat-messages.service';
+import { ChatMessagesService } from 'src/modules/chat-messages/chat-messages.service'; // Import ChatMessagesService
 
 import { CreateChatDto, UpdateChatDto } from './dtos';
 import { ChatsRepository } from './chats.repository';
@@ -21,7 +21,7 @@ export class ChatsService {
     constructor(
         private readonly chatsRepository: ChatsRepository,
         private readonly chatUsersService: ChatUsersService,
-        private readonly chatMessagesService: ChatMessagesService,
+        private readonly chatMessagesService: ChatMessagesService, // Inject ChatMessagesService
     ) {}
 
     async create(ownerId: string, createDto: CreateChatDto): Promise<ChatEntity> {

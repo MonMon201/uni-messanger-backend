@@ -1,15 +1,11 @@
-import { Global, Module } from '@nestjs/common';
-
-import { ChatUsersModule } from 'src/modules/chat-users/chat-users.module';
-
+import { Module } from '@nestjs/common';
 import { ChatsService } from './chats.service';
 import { ChatsRepository } from './chats.repository';
-import { ChatsController } from './chats.controller';
+import { ChatUsersModule } from '../chat-users/chat-users.module';
+import { ChatMessagesModule } from '../chat-messages/chat-messages.module';
 
-@Global()
 @Module({
-    imports: [ChatUsersModule],
-    controllers: [ChatsController],
+    imports: [ChatUsersModule, ChatMessagesModule],
     providers: [ChatsService, ChatsRepository],
     exports: [ChatsService],
 })

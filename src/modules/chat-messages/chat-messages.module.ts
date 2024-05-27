@@ -5,5 +5,6 @@ import { ChatMessagesGateway } from './chat-messages.gateway';
 
 @Module({
     providers: [ChatMessagesService, ChatMessagesRepository, ChatMessagesGateway],
+    exports: [ChatMessagesService],
 })
 export class ChatMessagesModule {}
