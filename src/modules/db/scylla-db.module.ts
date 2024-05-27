@@ -48,7 +48,6 @@ export class ScyllaDbModule implements OnApplicationShutdown {
             provide: SCYLLA_DB_CLIENT,
             useFactory: async (...args: any[]) => {
                 const config = await options.useFactory(...args);
-
                 return this.createClient(config);
             },
             imports: options.imports || [],
@@ -65,7 +64,6 @@ export class ScyllaDbModule implements OnApplicationShutdown {
     static createClient(options: ScyllaDbModuleOptions): Client {
         const client = new Client(options);
         logger.log('ScyllaDB client instance is ready');
-
         return client;
     }
 

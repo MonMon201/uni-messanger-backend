@@ -69,11 +69,4 @@ export class ChatsController {
     }
 
     // TODO add cascade deleting of everything that relates to chat
-    // @Delete(':chatId')
-    // @HttpCode(HttpStatus.NO_CONTENT)
-    // @ApiResponse({ status: 204, description: 'Chat deleted' })
-    // @ApiResponse({ status: 404, description: 'Chat not found' })
-    // async delete(@CurrentUser() user: JwtPayload, @Param('chatId', ParseUUIDPipe) chatId: string): Promise<void> {
-    //     await this.chatsService.delete(user.sub, chatId);
-    // }
 }

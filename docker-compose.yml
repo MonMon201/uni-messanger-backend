@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  scylla:
+    image: scylladb/scylla:latest
+    container_name: scylla
+    ports:
+      - "9042:9042"
+    volumes:
+      - scylla-data:/var/lib/scylla
+    environment:
+      - SCYLLA_CLUSTER_NAME=my-scylla-cluster
+      - SCYLLA_STARTUP_DELAY=60
+    command: ["--smp", "1", "--memory", "750M", "--developer-mode", "1"]
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nestjs-app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - scylla
+    environment:
+      NODE_ENV: production
+      APP_PORT: 3000
+      DB_CONTACT_POINTS: scylla
+      DB_LOCAL_DC: datacenter1
+      DB_KEYSPACE: test
+      DB_USERNAME: test
+      DB_PASSWORD: test
+      JWT_SECRET: secret
+      JWT_EXPIRE: 1d
+    command: ["npm", "run", "start:prod"]
+
+volumes:
+  scylla-data:
