@@ -1,7 +1,6 @@
-import { ConflictException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
-
-import { AddUserToChatDto } from './dtos';
 import { ChatUsersRepository } from './chat-users.repository';
+import { ConflictException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
+import { AddUserToChatDto } from './dtos';
 import { ChatUserEntity } from './chat-user.entity';
 
 @Injectable()
@@ -98,5 +97,12 @@ export class ChatUsersService {
         }
 
         return chatUser;
+    }
+
+    async removeUsersFromChat(chatId: string): Promise<void> {
+        const chatUsers = await this.chatUsersRepository.findChatUsers(chatId);
+        for (const chatUser of chatUsers) {
+            await this.chatUsersRepository.removeUserFromChat(chatId, chatUser.user_id);
+        }
     }
 }

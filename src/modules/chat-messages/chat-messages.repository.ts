@@ -64,4 +64,10 @@ export class ChatMessagesRepository {
     async deleteChatMessage(messageId: string): Promise<void> {
         await this.dbClient.execute(`DELETE FROM chat_messages WHERE id = ?`, [messageId]);
     }
+
+    async findAllMessagesByChatId(chatId: string): Promise<ChatMessageEntity[]> {
+        const resultSet = await this.dbClient.execute(`SELECT * FROM chat_messages WHERE chat_id = ?`, [chatId]);
+
+        return tmpStringifyDbResult(resultSet.rows) as any as ChatMessageEntity[];
+    }
 }
