@@ -69,6 +69,7 @@ export class UsersService {
 
     async findOneByEmail(email: string): Promise<UserEntity> {
         const userAuthEntity = await this.authRepository.findAuthByLoginCred(email);
+
         if (!userAuthEntity) {
             this.logger.log(`User email:${email} not found`);
             throw new NotFoundException(`User email:${email} not found`);
