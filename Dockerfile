@@ -11,6 +11,7 @@ COPY package*.json ./
 RUN npm install
 
 # Copy the build artifacts to the working directory
+COPY dist ./dist
 COPY .env ./
 
 # Make port 3000 available to the world outside this container

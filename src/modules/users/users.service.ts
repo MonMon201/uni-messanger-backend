@@ -3,12 +3,16 @@ import { ConflictException, Injectable, InternalServerErrorException, Logger, No
 import { CreateUserDto, UpdateUserDto } from './dtos';
 import { UsersRepository } from './users.repository';
 import { UserEntity } from './user.entity';
+import { AuthRepository } from '../auth/auth.repository';
 
 @Injectable()
 export class UsersService {
     logger = new Logger(UsersService.name);
 
-    constructor(private readonly usersRepository: UsersRepository) {}
+    constructor(
+        private readonly usersRepository: UsersRepository,
+        private readonly authRepository: AuthRepository,
+    ) {}
 
     async create(createDto: CreateUserDto): Promise<UserEntity> {
         const checkUsername = await this.usersRepository.findOneByUsername(createDto.username);
@@ -61,6 +65,22 @@ export class UsersService {
         this.logger.debug(`Found user username:${username}`);
 
         return user;
+    }
+
+    async findOneByEmail(email: string): Promise<UserEntity> {
+        const userAuthEntity = await this.authRepository.findAuthByLoginCred(email);
+        if (!userAuthEntity) {
+            this.logger.log(`User email:${email} not found`);
+            throw new NotFoundException(`User email:${email} not found`);
+        }
+
+        const { user_id } = userAuthEntity;
+
+        try {
+            return await this.usersRepository.findOneById(user_id);
+        } catch (e) {
+            throw e;
+        }
     }
 
     async update(id: string, updateDto: UpdateUserDto): Promise<UserEntity> {
