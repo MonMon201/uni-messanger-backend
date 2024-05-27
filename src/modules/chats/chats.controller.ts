@@ -68,12 +68,12 @@ export class ChatsController {
         return this.chatsService.update(user.sub, chatId, updateDto);
     }
 
-    // TODO add cascade deleting of everything that relates to chat
-    // @Delete(':chatId')
-    // @HttpCode(HttpStatus.NO_CONTENT)
-    // @ApiResponse({ status: 204, description: 'Chat deleted' })
-    // @ApiResponse({ status: 404, description: 'Chat not found' })
-    // async delete(@CurrentUser() user: JwtPayload, @Param('chatId', ParseUUIDPipe) chatId: string): Promise<void> {
-    //     await this.chatsService.delete(user.sub, chatId);
-    // }
+    @Delete(':chatId')
+    @HttpCode(HttpStatus.OK)
+    @ApiResponse({ status: 200, description: 'Chat deleted', type: ChatEntity })
+    @ApiResponse({ status: 404, description: 'Chat not found' })
+    @ApiResponse({ status: 403, description: 'Access Denied' })
+    async delete(@CurrentUser() user: JwtPayload, @Param('chatId', ParseUUIDPipe) chatId: string): Promise<ChatEntity> {
+        return this.chatsService.delete(user.sub, chatId);
+    }
 }

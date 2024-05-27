@@ -88,4 +88,11 @@ export class ChatMessagesService {
 
         return message;
     }
+
+    async removeMessagesFromChat(chatId: string): Promise<void> {
+        const messages = await this.chatMessagesRepository.findAllMessagesByChatId(chatId);
+        for (const message of messages) {
+            await this.chatMessagesRepository.deleteChatMessage(message.id);
+        }
+    }
 }
