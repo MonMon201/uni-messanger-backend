@@ -53,8 +53,6 @@ export class ChatMessagesService {
             throw new NotFoundException(`Chat message id:${messageId} not found for update`);
         }
 
-        console.log(message);
-
         const updatedMessage = Object.assign(message, updateDto);
 
         try {

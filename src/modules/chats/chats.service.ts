@@ -21,7 +21,7 @@ export class ChatsService {
     constructor(
         private readonly chatsRepository: ChatsRepository,
         private readonly chatUsersService: ChatUsersService,
-        private readonly chatMessagesService: ChatMessagesService, // Inject ChatMessagesService
+        private readonly chatMessagesService: ChatMessagesService,
     ) {}
 
     async create(ownerId: string, createDto: CreateChatDto): Promise<ChatEntity> {

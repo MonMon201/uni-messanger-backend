@@ -1,16 +1,18 @@
 import {
+    OnGatewayConnection,
+    OnGatewayDisconnect,
+    OnGatewayInit,
     SubscribeMessage,
     WebSocketGateway,
     WebSocketServer,
-    OnGatewayInit,
-    OnGatewayConnection,
-    OnGatewayDisconnect,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { Logger, UseGuards } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { ChatMessagesService } from './chat-messages.service';
 import { CreateChatMessageDto } from './dtos';
 import { AuthGuard } from '../auth/guards/auth.guard';
+import { isArray } from 'class-validator';
 
 @WebSocketGateway({
     namespace: 'chat',
@@ -24,16 +26,32 @@ export class ChatMessagesGateway implements OnGatewayInit, OnGatewayConnection, 
     @WebSocketServer() server: Server;
     private logger: Logger = new Logger('ChatMessagesGateway');
 
-    constructor(private readonly chatMessagesService: ChatMessagesService) {}
+    constructor(
+        private readonly chatMessagesService: ChatMessagesService,
+        private readonly jwtService: JwtService,
+    ) {}
 
-    afterInit() {
-        this.logger.log('Initialized');
-    }
+    afterInit() {}
 
+    @UseGuards(AuthGuard)
     async handleConnection(client: Socket) {
-        this.logger.log(`Client connected: ${client.id}`);
+        const token = client.handshake.query.token;
+        if (!token || isArray(token)) {
+            client.disconnect();
+            this.logger.log(`Client disconnected due to missing token: ${client.id}`);
+            return;
+        }
+
+        try {
+            client['user'] = this.jwtService.verify(token);
+            this.logger.log(`Client connected: ${client.id}`);
+        } catch (error) {
+            client.disconnect();
+            this.logger.log(`Client disconnected due to invalid token: ${client.id}`);
+        }
     }
 
+    @UseGuards(AuthGuard)
     async handleDisconnect(client: Socket) {
         this.logger.log(`Client disconnected: ${client.id}`);
     }
