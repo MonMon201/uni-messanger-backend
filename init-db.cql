@@ -60,5 +60,7 @@ CREATE INDEX IF NOT EXISTS email_idx ON auth (email);
 CREATE INDEX IF NOT EXISTS username_idx ON users (username);
 CREATE INDEX IF NOT EXISTS slug_idx ON chats (slug);
 CREATE INDEX IF NOT EXISTS chat_messages_date_idx ON chat_messages (date);
+CREATE INDEX IF NOT EXISTS chat_id_idx ON chat_messages (chat_id);
 CREATE INDEX IF NOT EXISTS users_by_chat_user_id_idx ON users_by_chat (user_id);
+
 
