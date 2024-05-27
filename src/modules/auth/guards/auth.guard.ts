@@ -5,11 +5,9 @@ export class AuthGuard implements CanActivate {
     constructor(@Inject(JwtService) private readonly jwtService: JwtService) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
-        if (context.getType() === 'ws') {
-            return this.validateWebSocketConnection(context);
-        } else {
-            return this.validateHttpRequest(context);
-        }
+        return context.getType() === 'ws'
+            ? this.validateWebSocketConnection(context)
+            : this.validateHttpRequest(context);
     }
 
     private async validateHttpRequest(context: ExecutionContext): Promise<boolean> {
@@ -30,6 +28,7 @@ export class AuthGuard implements CanActivate {
     private async validateWebSocketConnection(context: ExecutionContext): Promise<boolean> {
         const client = context.switchToWs().getClient();
         const token = this.extractTokenFromSocket(client);
+
         if (!token) {
             throw new UnauthorizedException();
         }
@@ -39,6 +38,7 @@ export class AuthGuard implements CanActivate {
         } catch {
             throw new UnauthorizedException();
         }
+
         return true;
     }
 

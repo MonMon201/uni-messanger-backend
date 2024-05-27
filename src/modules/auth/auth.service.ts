@@ -12,7 +12,6 @@ import { UsersService } from 'src/modules/users/users.service';
 import { UserEntity } from 'src/modules/users/user.entity';
 
 import { LoginDto, RegisterDto, JwtDto } from './dtos';
-// import { JwtRefreshEntity } from './jwt-refresh.entity';
 import { AuthRepository } from './auth.repository';
 import { Hash } from './utils/hash';
 import { JwtPayload } from './types/jwt-payload';

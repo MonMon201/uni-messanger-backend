@@ -8,16 +8,17 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { Logger, UseGuards } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { ChatMessagesService } from './chat-messages.service';
 import { CreateChatMessageDto } from './dtos';
 import { AuthGuard } from '../auth/guards/auth.guard';
+import { ChatUsersService } from '../chat-users/chat-users.service';
 import { isArray } from 'class-validator';
+import { UsersService } from '../users/users.service';
 
 @WebSocketGateway({
     namespace: 'chat',
     cors: {
-        origin: 'http://localhost:5173', // Replace with your client application's URL
+        origin: '*', // Replace with your client application's URL
         methods: ['GET', 'POST'],
         credentials: true,
     },
@@ -28,27 +29,46 @@ export class ChatMessagesGateway implements OnGatewayInit, OnGatewayConnection, 
 
     constructor(
         private readonly chatMessagesService: ChatMessagesService,
-        private readonly jwtService: JwtService,
+        private readonly chatUsersService: ChatUsersService,
+        private readonly usersService: UsersService,
     ) {}
 
     afterInit() {}
 
     @UseGuards(AuthGuard)
     async handleConnection(client: Socket) {
-        const token = client.handshake.query.token;
-        if (!token || isArray(token)) {
+        const chatId = client.handshake.query.chatId;
+        const email = client.handshake.query.email;
+
+        if (!email || isArray(email)) {
+            this.logger.log(`Client connection rejected due to missing chatId: ${client.id}`);
             client.disconnect();
-            this.logger.log(`Client disconnected due to missing token: ${client.id}`);
             return;
         }
 
-        try {
-            client['user'] = this.jwtService.verify(token);
-            this.logger.log(`Client connected: ${client.id}`);
-        } catch (error) {
+        if (!chatId || isArray(chatId)) {
+            this.logger.log(`Client connection rejected due to missing chatId: ${client.id}`);
             client.disconnect();
-            this.logger.log(`Client disconnected due to invalid token: ${client.id}`);
+            return;
         }
+
+        const user = await this.usersService.findOneByUsername(email);
+
+        if (!user) {
+            this.logger.log(`Client connection rejected: ${email} is not a user`);
+            client.disconnect();
+            return;
+        }
+
+        const { user_id } = user;
+
+        const isUserInChat = await this.chatUsersService.findUserInChat(chatId, user_id);
+        if (!isUserInChat) {
+            this.logger.log(`Client connection rejected: ${client.id} is not in chat ${chatId}`);
+            client.disconnect();
+            return;
+        }
+        this.logger.log(`Client connected: ${client.id}`);
     }
 
     @UseGuards(AuthGuard)
