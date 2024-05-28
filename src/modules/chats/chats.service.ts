@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 
 import { ChatUsersService } from 'src/modules/chat-users/chat-users.service';
-import { ChatMessagesService } from 'src/modules/chat-messages/chat-messages.service';
+import { ChatMessagesService } from 'src/modules/chat-messages/chat-messages.service'; // Import ChatMessagesService
 
 import { CreateChatDto, UpdateChatDto } from './dtos';
 import { ChatsRepository } from './chats.repository';

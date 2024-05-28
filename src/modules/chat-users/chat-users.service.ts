@@ -1,5 +1,5 @@
+import { Injectable, InternalServerErrorException, Logger, NotFoundException, ConflictException } from '@nestjs/common';
 import { ChatUsersRepository } from './chat-users.repository';
-import { ConflictException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { AddUserToChatDto } from './dtos';
 import { ChatUserEntity } from './chat-user.entity';
 

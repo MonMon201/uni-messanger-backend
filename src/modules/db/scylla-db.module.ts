@@ -70,7 +70,6 @@ export class ScyllaDbModule implements OnApplicationShutdown {
     async onApplicationShutdown() {
         const client = this.moduleRef.get<Client>(SCYLLA_DB_CLIENT);
         if (client) {
-            console.log('Closing ScyllaDB connection');
             await client.shutdown();
         }
     }

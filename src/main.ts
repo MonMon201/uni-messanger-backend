@@ -25,11 +25,10 @@ async function bootstrap() {
     );
 
     app.enableCors({
-        origin: '*', // Allows all origins
-        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-        allowedHeaders: 'Content-Type, Accept',
-        credentials: true, // Allows cookies to be sent with requests
-        preflightContinue: false,
+        origin: 'http://localhost:5173',
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+        allowedHeaders: 'Content-Type,Authorization, Accept',
+        credentials: true,
         optionsSuccessStatus: 204,
     });
 

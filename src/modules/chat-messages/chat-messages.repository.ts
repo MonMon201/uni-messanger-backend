@@ -32,19 +32,17 @@ export class ChatMessagesRepository {
     }
 
     async findAllChatMessagesForDate(chatId: string, date: Date) {
-        const resultSet = await this.dbClient.execute(`SELECT * FROM chat_messages WHERE chat_id = ? AND date = ?`, [
-            chatId,
-            types.LocalDate.fromDate(date),
-        ]);
+        const resultSet = await this.dbClient.execute(
+            `SELECT * FROM chat_messages WHERE chat_id = ? AND date = ? ALLOW FILTERING;`,
+            [chatId, types.LocalDate.fromDate(date)],
+        );
 
         return tmpStringifyDbResult(resultSet.rows) as any as ChatMessageEntity[];
     }
 
     async findChatMessageById(messageId: string): Promise<ChatMessageEntity> {
-        console.log(messageId);
         const resultSet = await this.dbClient.execute(`SELECT * FROM chat_messages WHERE id = ?`, [messageId]);
 
-        console.log(resultSet.first());
         return tmpStringifyDbResult(resultSet.first()) as any as ChatMessageEntity;
     }
 

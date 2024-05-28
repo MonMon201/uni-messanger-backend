@@ -1,5 +1,4 @@
 import { Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
-
 import { ChatMessagesRepository } from './chat-messages.repository';
 import { CreateChatMessageDto, UpdateChatMessageDto } from './dtos';
 import { ChatMessageEntity } from './chat-message.entity';
@@ -53,8 +52,6 @@ export class ChatMessagesService {
             this.logger.log(`Chat message id:${messageId} not found`);
             throw new NotFoundException(`Chat message id:${messageId} not found for update`);
         }
-
-        console.log(message);
 
         const updatedMessage = Object.assign(message, updateDto);
 

@@ -7,8 +7,8 @@ WORKDIR /usr/src/app
 # Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
 
-# Install only production dependencies
-RUN npm install --only=production
+# Install dependencies
+RUN npm install
 
 # Copy the build artifacts to the working directory
 COPY dist ./dist
